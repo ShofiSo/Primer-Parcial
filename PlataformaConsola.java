@@ -81,7 +81,7 @@ public class PlataformaConsola {
 
         mostrarEstadoProyecto();
 
-        // Esperar que el usuario presione Enter
+        // Esperar que el usuario presione Enter, si no le dpy enter no me muestra otra vez el menu
         System.out.print("-- Presione Enter para continuar --");
         scanner.nextLine();
     }
