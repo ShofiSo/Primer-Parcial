@@ -113,4 +113,3 @@ remote: Resolving deltas: 100% (1/1), completed with 1 local object.
 To https://github.com/ShofiSo/Primer-Parcial.git
    39cd63e..53c82d9  main -> main
 branch 'main' set up to track 'origin/main'.
-PS C:\Users\Shofia Soto\Programas\PrimerParcialEsDatos>

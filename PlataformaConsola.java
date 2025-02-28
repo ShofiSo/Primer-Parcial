@@ -6,6 +6,10 @@ public class PlataformaConsola {
     private static List<Integer> numeros = new ArrayList<>();
     private static Scanner scanner = new Scanner(System.in);
 
+    // Datos fijos del proyecto
+    private static final String universidad = "Universidad Da Vinci de Guatemala";
+    private static final String curso = "Estructura de Datos";
+    private static final String docente = "Ing. Brandon Chitay";
     public static void main(String[] args) {
         while (true) {
             mostrarMenu();
@@ -49,6 +53,9 @@ public class PlataformaConsola {
     private static void mostrarInformacionDesarrollador() {
         System.out.println("\nDesarrollador: Nombre Apellido");
         System.out.println("Contacto: correo@ejemplo.com");
+        System.out.println("Universidad: " + universidad);
+    System.out.println("Curso: " + curso);
+    System.out.println("Docente: " + docente);
     }
 
     private static void cargarDatosDesdeCSV() {
@@ -179,4 +186,3 @@ public class PlataformaConsola {
         System.out.println(resultado >= 0 ? "Número encontrado." : "Número no encontrado.");
     }
 }
-
