@@ -179,3 +179,4 @@ public class PlataformaConsola {
         System.out.println(resultado >= 0 ? "Número encontrado." : "Número no encontrado.");
     }
 }
+
