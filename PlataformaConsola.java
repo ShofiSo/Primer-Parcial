@@ -15,6 +15,10 @@ public class PlataformaConsola {
     private static String nombreDesarrollador = "";
     private static String contactoDesarrollador = "";
 
+    // Para mantener el estado de los puntos completados y faltantes
+    private static Set<Integer> puntosCompletados = new HashSet<>();
+    private static Set<Integer> puntosFaltantes = new HashSet<>();
+
     public static void main(String[] args) {
         while (true) {
             mostrarMenu();
@@ -71,36 +75,39 @@ public class PlataformaConsola {
         System.out.println("Docente: " + DOCENTE);
         System.out.println("========================================");
 
-        System.out.println("-- Presione Enter para continuar --");
+        // Después de ingresar la información, mostrar los pasos completados y faltantes
+        puntosCompletados.add(1); // El punto 1 está completo
+        puntosFaltantes.remove(1); // El punto 1 ya no está faltando
+
+        mostrarEstadoProyecto();
+
+        // Esperar que el usuario presione Enter
+        System.out.print("-- Presione Enter para continuar --");
         scanner.nextLine();
     }
 
     private static void cargarDatosDesdeCSV() {
-        System.out.print("📂 Ingrese el nombre del archivo CSV: ");
+        System.out.print("Ingrese el nombre del archivo CSV: ");
         String nombreArchivo = scanner.nextLine();
-        List<Integer> datosCargados = cargarDatos(nombreArchivo);
-        if (!datosCargados.isEmpty()) {
-            numeros.clear();
-            numeros.addAll(datosCargados);
-            System.out.println("✅ Datos cargados exitosamente desde " + nombreArchivo);
-        }
-    }
-
-    private static List<Integer> cargarDatos(String nombreArchivo) {
-        List<Integer> datos = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(nombreArchivo))) {
+            numeros.clear();
             String linea;
             while ((linea = br.readLine()) != null) {
-                try {
-                    datos.add(Integer.parseInt(linea.trim()));
-                } catch (NumberFormatException e) {
-                    System.out.println("⚠️ Dato inválido en el archivo: " + linea);
+                for (String num : linea.split(",")) {
+                    numeros.add(Integer.parseInt(num.trim()));
                 }
             }
-        } catch (IOException e) {
-            System.out.println("❌ Error al leer el archivo: " + e.getMessage());
+            System.out.println("Datos cargados correctamente.");
+            puntosCompletados.add(2); // El punto 2 está completo
+            puntosFaltantes.remove(2); // El punto 2 ya no está faltando
+        } catch (IOException | NumberFormatException e) {
+            System.out.println("Error al leer el archivo.");
         }
-        return datos;
+
+        mostrarEstadoProyecto();
+        // Esperar que el usuario presione Enter
+        System.out.print("-- Presione Enter para continuar --");
+        scanner.nextLine();
     }
 
     private static void ordenarNumeros() {
@@ -120,87 +127,13 @@ public class PlataformaConsola {
             default -> System.out.println("Método no válido.");
         }
         System.out.println("Lista ordenada: " + numeros);
-    }
+        puntosCompletados.add(3); // El punto 3 está completo
+        puntosFaltantes.remove(3); // El punto 3 ya no está faltando
 
-    private static void bubbleSort() {
-        for (int i = 0; i < numeros.size() - 1; i++) {
-            for (int j = 0; j < numeros.size() - 1 - i; j++) {
-                if (numeros.get(j) > numeros.get(j + 1)) {
-                    Collections.swap(numeros, j, j + 1);
-                }
-            }
-        }
-    }
-
-    private static void bubbleSortMejorado() {
-        boolean swapped;
-        for (int i = 0; i < numeros.size() - 1; i++) {
-            swapped = false;
-            for (int j = 0; j < numeros.size() - 1 - i; j++) {
-                if (numeros.get(j) > numeros.get(j + 1)) {
-                    Collections.swap(numeros, j, j + 1);
-                    swapped = true;
-                }
-            }
-            if (!swapped) break;
-        }
-    }
-
-    private static void quickSort(int inicio, int fin) {
-        if (inicio < fin) {
-            int pi = particion(inicio, fin);
-            quickSort(inicio, pi - 1);
-            quickSort(pi + 1, fin);
-        }
-    }
-
-    private static int particion(int inicio, int fin) {
-        int pivote = numeros.get(fin);
-        int i = inicio - 1;
-        for (int j = inicio; j < fin; j++) {
-            if (numeros.get(j) < pivote) {
-                i++;
-                Collections.swap(numeros, i, j);
-            }
-        }
-        Collections.swap(numeros, i + 1, fin);
-        return i + 1;
-    }
-
-    private static void selectionSort() {
-        for (int i = 0; i < numeros.size() - 1; i++) {
-            int minIdx = i;
-            for (int j = i + 1; j < numeros.size(); j++) {
-                if (numeros.get(j) < numeros.get(minIdx)) {
-                    minIdx = j;
-                }
-            }
-            Collections.swap(numeros, i, minIdx);
-        }
-    }
-
-    private static void mergeSort(int izquierda, int derecha) {
-        if (izquierda < derecha) {
-            int medio = (izquierda + derecha) / 2;
-            mergeSort(izquierda, medio);
-            mergeSort(medio + 1, derecha);
-            merge(izquierda, medio, derecha);
-        }
-    }
-
-    private static void merge(int izquierda, int medio, int derecha) {
-        List<Integer> izquierdaLista = new ArrayList<>(numeros.subList(izquierda, medio + 1));
-        List<Integer> derechaLista = new ArrayList<>(numeros.subList(medio + 1, derecha + 1));
-        int i = 0, j = 0, k = izquierda;
-        while (i < izquierdaLista.size() && j < derechaLista.size()) {
-            if (izquierdaLista.get(i) <= derechaLista.get(j)) {
-                numeros.set(k++, izquierdaLista.get(i++));
-            } else {
-                numeros.set(k++, derechaLista.get(j++));
-            }
-        }
-        while (i < izquierdaLista.size()) numeros.set(k++, izquierdaLista.get(i++));
-        while (j < derechaLista.size()) numeros.set(k++, derechaLista.get(j++));
+        mostrarEstadoProyecto();
+        // Esperar que el usuario presione Enter
+        System.out.print("-- Presione Enter para continuar --");
+        scanner.nextLine();
     }
 
     private static void buscarNumero() {
@@ -212,6 +145,116 @@ public class PlataformaConsola {
         int valor = obtenerEntrada();
         int resultado = Collections.binarySearch(numeros, valor);
         System.out.println(resultado >= 0 ? "Número encontrado." : "Número no encontrado.");
+        puntosCompletados.add(4); // El punto 4 está completo
+        puntosFaltantes.remove(4); // El punto 4 ya no está faltando
+
+        mostrarEstadoProyecto();
+        // Esperar que el usuario presione Enter
+        System.out.print("-- Presione Enter para continuar --");
+        scanner.nextLine();
+    }
+
+    private static void mostrarEstadoProyecto() {
+        // Mostrar los puntos completados y faltantes con los emojis
+        System.out.println("\nEstado del Proyecto:");
+        for (int i = 1; i <= 4; i++) {
+            if (puntosCompletados.contains(i)) {
+                System.out.println("Punto " + i + " ✅");
+            } else if (puntosFaltantes.contains(i)) {
+                System.out.println("Punto " + i + " ❌");
+            }
+        }
+    }
+
+    // Métodos de ordenamiento
+
+    // Bubble Sort
+    private static void bubbleSort() {
+        for (int i = 0; i < numeros.size() - 1; i++) {
+            for (int j = 0; j < numeros.size() - i - 1; j++) {
+                if (numeros.get(j) > numeros.get(j + 1)) {
+                    Collections.swap(numeros, j, j + 1);
+                }
+            }
+        }
+    }
+
+    // Bubble Sort Mejorado
+    private static void bubbleSortMejorado() {
+        boolean intercambio;
+        for (int i = 0; i < numeros.size() - 1; i++) {
+            intercambio = false;
+            for (int j = 0; j < numeros.size() - i - 1; j++) {
+                if (numeros.get(j) > numeros.get(j + 1)) {
+                    Collections.swap(numeros, j, j + 1);
+                    intercambio = true;
+                }
+            }
+            if (!intercambio) break;
+        }
+    }
+
+    // Quick Sort
+    private static void quickSort(int low, int high) {
+        if (low < high) {
+            int pi = partition(low, high);
+            quickSort(low, pi - 1);
+            quickSort(pi + 1, high);
+        }
+    }
+
+    private static int partition(int low, int high) {
+        int pivot = numeros.get(high);
+        int i = low - 1;
+        for (int j = low; j < high; j++) {
+            if (numeros.get(j) <= pivot) {
+                i++;
+                Collections.swap(numeros, i, j);
+            }
+        }
+        Collections.swap(numeros, i + 1, high);
+        return i + 1;
+    }
+
+    // Selection Sort
+    private static void selectionSort() {
+        for (int i = 0; i < numeros.size() - 1; i++) {
+            int minIndex = i;
+            for (int j = i + 1; j < numeros.size(); j++) {
+                if (numeros.get(j) < numeros.get(minIndex)) {
+                    minIndex = j;
+                }
+            }
+            Collections.swap(numeros, i, minIndex);
+        }
+    }
+
+    // Merge Sort
+    private static void mergeSort(int left, int right) {
+        if (left < right) {
+            int mid = (left + right) / 2;
+            mergeSort(left, mid);
+            mergeSort(mid + 1, right);
+            merge(left, mid, right);
+        }
+    }
+
+    private static void merge(int left, int mid, int right) {
+        List<Integer> temp = new ArrayList<>(numeros.subList(left, right + 1));
+        int i = left, j = mid + 1, k = 0;
+        while (i <= mid && j <= right) {
+            if (temp.get(i - left) <= temp.get(j - left)) {
+                numeros.set(k++, temp.get(i++ - left));
+            } else {
+                numeros.set(k++, temp.get(j++ - left));
+            }
+        }
+        while (i <= mid) {
+            numeros.set(k++, temp.get(i++ - left));
+        }
+        while (j <= right) {
+            numeros.set(k++, temp.get(j++ - left));
+        }
     }
 }
 
