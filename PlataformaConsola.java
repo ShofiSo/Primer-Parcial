@@ -7,9 +7,14 @@ public class PlataformaConsola {
     private static Scanner scanner = new Scanner(System.in);
 
     // Datos fijos del proyecto
-    private static final String universidad = "Universidad Da Vinci de Guatemala";
-    private static final String curso = "Estructura de Datos";
-    private static final String docente = "Ing. Brandon Chitay";
+    private static final String UNIVERSIDAD = "Universidad Da Vinci de Guatemala";
+    private static final String CURSO = "Estructura de Datos";
+    private static final String DOCENTE = "Ing. Brandon Chitay";
+
+    // Variables para almacenar la información del desarrollador
+    private static String nombreDesarrollador = "";
+    private static String contactoDesarrollador = "";
+
     public static void main(String[] args) {
         while (true) {
             mostrarMenu();
@@ -17,7 +22,7 @@ public class PlataformaConsola {
             ejecutarOpcion(opcion);
         }
     }
-//El Menu
+
     private static void mostrarMenu() {
         System.out.println("\n---* Menú Principal *---");
         System.out.println("1. Información del Desarrollador");
@@ -51,28 +56,51 @@ public class PlataformaConsola {
     }
 
     private static void mostrarInformacionDesarrollador() {
-        System.out.println("\nDesarrollador: Nombre Apellido");
-        System.out.println("Contacto: correo@ejemplo.com");
-        System.out.println("Universidad: " + universidad);
-    System.out.println("Curso: " + curso);
-    System.out.println("Docente: " + docente);
+        if (nombreDesarrollador.isEmpty() || contactoDesarrollador.isEmpty()) {
+            System.out.print("\nIngrese su nombre como desarrollador: ");
+            nombreDesarrollador = scanner.nextLine();
+            System.out.print("Ingrese su contacto: ");
+            contactoDesarrollador = scanner.nextLine();
+        }
+
+        System.out.println("\n========================================");
+        System.out.println("Desarrollador: " + nombreDesarrollador);
+        System.out.println("Contacto: " + contactoDesarrollador);
+        System.out.println("Universidad: " + UNIVERSIDAD);
+        System.out.println("Curso: " + CURSO);
+        System.out.println("Docente: " + DOCENTE);
+        System.out.println("========================================");
+
+        System.out.println("-- Presione Enter para continuar --");
+        scanner.nextLine();
     }
 
     private static void cargarDatosDesdeCSV() {
-        System.out.print("Ingrese el nombre del archivo CSV: ");
+        System.out.print("📂 Ingrese el nombre del archivo CSV: ");
         String nombreArchivo = scanner.nextLine();
-        try (BufferedReader br = new BufferedReader(new FileReader(nombreArchivo))) {
+        List<Integer> datosCargados = cargarDatos(nombreArchivo);
+        if (!datosCargados.isEmpty()) {
             numeros.clear();
+            numeros.addAll(datosCargados);
+            System.out.println("✅ Datos cargados exitosamente desde " + nombreArchivo);
+        }
+    }
+
+    private static List<Integer> cargarDatos(String nombreArchivo) {
+        List<Integer> datos = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(nombreArchivo))) {
             String linea;
             while ((linea = br.readLine()) != null) {
-                for (String num : linea.split(",")) {
-                    numeros.add(Integer.parseInt(num.trim()));
+                try {
+                    datos.add(Integer.parseInt(linea.trim()));
+                } catch (NumberFormatException e) {
+                    System.out.println("⚠️ Dato inválido en el archivo: " + linea);
                 }
             }
-            System.out.println("Datos cargados correctamente.");
-        } catch (IOException | NumberFormatException e) {
-            System.out.println("Error al leer el archivo.");
+        } catch (IOException e) {
+            System.out.println("❌ Error al leer el archivo: " + e.getMessage());
         }
+        return datos;
     }
 
     private static void ordenarNumeros() {
@@ -186,3 +214,5 @@ public class PlataformaConsola {
         System.out.println(resultado >= 0 ? "Número encontrado." : "Número no encontrado.");
     }
 }
+
+
